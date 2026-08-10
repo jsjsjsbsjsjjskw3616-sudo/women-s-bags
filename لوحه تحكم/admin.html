@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم - طلبات المتجر</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f4f7f6; padding: 20px; direction: rtl; }
+        h1 { color: #333; text-align: center; }
+        .order-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-right: 5px solid #007bff; }
+        .order-card h3 { margin-top: 0; color: #007bff; }
+        .btn-delete { background: #dc3545; color: white; border: none; padding: 8px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .btn-delete:hover { background: #c82333; }
+        .no-orders { text-align: center; color: #777; font-size: 18px; margin-top: 50px; }
+        .top-bar { text-align: left; margin-bottom: 20px; }
+        .top-bar a { background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html">الذهاب للمتجر 🛍️</a>
+    </div>
+
+    <h1>لوحة تحكم الطلبات 📋</h1>
+    <div id="orders-container"></div>
+
+    <script>
+        function loadOrders() {
+            const container = document.getElementById('orders-container');
+            let orders = JSON.parse(localStorage.getItem('store_orders')) || [];
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p class="no-orders">لا توجد طلبات جديدة حتى الآن.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            orders.forEach((order) => {
+                container.innerHTML += `
+                    <div class="order-card">
+                        <h3>طلب جديد من: ${order.customer_name}</h3>
+                        <p><strong>رقم الهاتف:</strong> ${order.customer_phone}</p>
+                        <p><strong>العنوان:</strong> ${order.customer_address}</p>
+                        <p><strong>المنتجات المطلوبة:</strong> ${order.cart_items}</p>
+                        <p><strong>الإجمالي:</strong> ${order.total_price} ج.م</p>
+                        <p><strong>وقت الطلب:</strong> ${order.date}</p>
+                        <button class="btn-delete" onclick="deleteOrder(${order.id})">تم الحفظ / حذف الطلب</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteOrder(id) {
+            let orders = JSON.parse(localStorage.getItem('store_orders')) || [];
+            orders = orders.filter(order => order.id !== id);
+            localStorage.setItem('store_orders', JSON.stringify(orders));
+            loadOrders();
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>
