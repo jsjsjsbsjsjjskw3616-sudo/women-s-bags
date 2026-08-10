@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج - متجر الشنط</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* تنسيقات إضافية خاصة بصفحة التفاصيل */
+        .product-details-wrapper {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            display: flex;
+            gap: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            align-items: center;
+        }
+        .product-details-wrapper img {
+            width: 50%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-details-info {
+            flex-grow: 1;
+            text-align: right;
+        }
+        .product-details-info h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .product-details-info .price {
+            color: #e74c3c;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .product-details-info p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">أناقة شنطة</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">الرئيسية</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" onclick="toggleCartModal()">
+            🛒 سلة المشتريات (<span id="cart-count">0</span>)
+        </div>
+    </header>
+
+    <div class="product-details-wrapper">
+        <img id="p-image" src="" alt="صورة الشنطة">
+        <div class="product-details-info">
+            <h1 id="p-name"></h1>
+            <div class="price" id="p-price"></div>
+            <p id="p-desc">وصف مختصر للشنطة: مصنوعة من أجود أنواع الجلود الطبيعية، تصميم عصري وأنيق يناسب جميع الأوقات والمناسبات.</p>
+            <button class="btn" onclick="addToCartAndOpenModal()" style="width: 100%; border: none; cursor: pointer; padding: 12px; font-size: 16px;">إضافة إلى السلة</button>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="toggleCartModal()">&times;</span>
+            <h2>سلة المشتريات</h2>
+            
+            <div id="cart-items-container">
+                <p class="empty-cart-msg">السلة فارغة حالياً</p>
+            </div>
+
+            <div class="cart-total">
+                <h3>الإجمالي الكلي: <span id="total-price">0</span> ج.م</h3>
+            </div>
+
+            <div id="checkout-section" class="checkout-form" style="display: none;">
+                <h3>تفاصيل الشحن والتوصيل</h3>
+                <form id="order-form" onsubmit="submitOrder(event)">
+                    <div class="form-group">
+                        <label>الاسم بالكامل:</label>
+                        <input type="text" id="customer-name" required placeholder="أدخل اسمك هنا">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف:</label>
+                        <input type="tel" id="customer-phone" required placeholder="010xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان بالتفصيل:</label>
+                        <textarea id="customer-address" required placeholder="المحافظة، المنطقة، الشارع، رقم الحلة"></textarea>
+                    </div>
+                    <button type="submit" class="submit-order-btn">تأكيد وإرسال الطلب</button>
+                </form>
+            </div>
+
+            <button id="checkout-toggle-btn" class="checkout-btn" onclick="showCheckoutForm()" style="display: none;">إتمام الشراء</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 متجر الشنط</p>
+    </footer>
+
+    <script>
+        // التقاط بيانات المنتج من الابط القادم من الصفحة الرئيسية
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentProduct = {
+            name: urlParams.get('name'),
+            price: parseFloat(urlParams.get('price')),
+            image: urlParams.get('image')
+        };
+
+        // عرض بيانات الشنطة في الصفحة
+        document.getElementById('p-name').innerText = currentProduct.name;
+        document.getElementById('p-price').innerText = currentProduct.price + " ج.م";
+        document.getElementById('p-image').src = currentProduct.image;
+
+        // مصفوفة السلة
+        let cart = [];
+
+        // عند الضغط على "إضافة إلى السلة" من داخل صفحة التفاصيل
+        function addToCartAndOpenModal() {
+            cart.push(currentProduct);
+            updateCartUI();
+            toggleCartModal(); // فتح نافذة السلة تلقائياً لتظهر فيها تفاصيل الشنطة والبيانات
+        }
+
+        // تحديث واجهة السلة (صورة، اسم، سعر)
+        function updateCartUI() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const totalPriceElement = document.getElementById('total-price');
+            const checkoutBtn = document.getElementById('checkout-toggle-btn');
+
+            cartCount.textContent = cart.length;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `<p class="empty-cart-msg">السلة فارغة حالياً</p>`;
+                totalPriceElement.textContent = "0";
+                checkoutBtn.style.display = "none";
+                document.getElementById('checkout-section').style.display = "none";
+                return;
+            }
+
+            cartItemsContainer.innerHTML = "";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item-card');
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                    <div class="cart-item-details" style="flex-grow: 1; text-align: right;">
+                        <h4 style="font-size: 15px; margin-bottom: 5px;">${item.name}</h4>
+                        <p style="color: #e74c3c; font-weight: bold; font-size: 14px;">${item.price} ج.م</p>
+                    </div>
+                    <button class="remove-item-btn" onclick="removeFromCart(${index})" style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-weight: bold;">حذف</button>
+                `;
+                cartItemsContainer.appendChild(itemDiv);
+            });
+
+            totalPriceElement.textContent = total;
+            checkoutBtn.style.display = "block";
+        }
+
+        // حذف منتج من السلة داخل صفحة التفاصيل
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // فتح وإغلاق نافذة السلة (المودال)
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // إظهار نموذج بيانات العميل عند الضغط على إتمام الشراء
+        function showCheckoutForm() {
+            document.getElementById('checkout-section').style.display = 'block';
+            document.getElementById('checkout-toggle-btn').style.display = 'none';
+        }
+
+        // تأكيد وإرسال الطلب
+        function submitOrder(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const address = document.getElementById('customer-address').value;
+
+            alert(`شكراً لكِ يا ${name}! 🛍️\nتم استلام طلبك بنجاح وسيتم التواصل معكِ على الرقم (${phone}) وشحنه إلى (${address}).`);
+
+            cart = [];
+            updateCartUI();
+            document.getElementById('order-form').reset();
+            toggleCartModal();
+        }
+    </script>
+</body>
+</html>

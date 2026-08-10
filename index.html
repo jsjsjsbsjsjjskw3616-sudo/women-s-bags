@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الشنط والأحقائب الفاخرة</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- شريط التنقل العلوي -->
+    <header>
+        <div class="logo">أناقة شنطة</div>
+        <nav>
+            <ul>
+                <li><a href="#">الرئيسية</a></li>
+                <li><a href="#products">المنتجات</a></li>
+            </ul>
+        </nav>
+        <!-- أيقونة السلة -->
+        <div class="cart-icon" onclick="toggleCartModal()">
+            🛒 سلة المشتريات (<span id="cart-count">0</span>)
+        </div>
+    </header>
+    <!--قسم الواجهه--> 
+    <section class="hero">
+        <h1>اكتشفي أحدث تشكيلة من الحقائب الفاخرة</h1>
+        <p>تصاميم عصرية تناسب كل الاوقات والمناسبات</p>
+        <a href="#products"class="btn">تسوقي الان</a>
+    </section>
+    <!-- قسم عرض المنتجات -->
+    <section id="products" class="products-section">
+        <h2>منتجاتنا المميزة</h2>
+        <div id="products-container" class="products-grid"></div>
+    </section>
+    <!-- نافذة السلة -->
+<div id="cart-modal" style="display: none; position: fixed; top: 10%; right: 10%; width: 80%; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000; border-radius: 8px;">
+    <h2>سلة المشتريات 🛒</h2>
+    <div id="cart-items-container"></div>
+    <h3>الإجمالي: <span id="total-price">0</span> ج.م</h3>
+
+    <!-- فورم بيانات العميل وتأكيد الطلب مباشرة جوه السلة -->
+    <form id="order-form" onsubmit="submitOrder(event)" style="margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+        <h3>بيانات الشحن وتأكيد الطلب</h3>
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="customer-name" placeholder="الاسم الكامل" required style="width: 100%; padding: 8px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="customer-phone" placeholder="رقم الهاتف" required style="width: 100%; padding: 8px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="customer-address" placeholder="العنوان بالتفصيل" required style="width: 100%; padding: 8px;">
+        </div>
+        <button type="submit" style="background: #28a745; color: white; border: none; padding: 10px 15px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 5px;">تأكيد وإرسال الطلب</button>
+    </form>
+
+    <button onclick="toggleCartModal()" style="background: #dc3545; color: white; border: none; padding: 5px 10px; margin-top: 10px; cursor: pointer;">إغلاق السلة</button>
+</div>
+    <!-- تذييل الصفحة -->
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 متجر الشنط</p>
+        <a href="admin.html" target="_blank">لوحة التحكم ⚙️</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
